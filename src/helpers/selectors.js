@@ -8,6 +8,16 @@ export function getAppointmentsForDay(state, day) {
   return selectedDayAppointments;
 }
 
+export function getInterviewersForDay(state, day) {
+  let selectedDayInterviewers = [];
+  const selectedDay = state.days.find(stateDayItem => stateDayItem.name === day);
+
+  if (selectedDay) {
+    selectedDayInterviewers = selectedDay.interviewers.map(interviewer => state.interviewers[interviewer]);
+  }
+  return selectedDayInterviewers;
+}
+
 export function getInterview(state, interview) {
   if (interview && interview.interviewer) {
     return {
