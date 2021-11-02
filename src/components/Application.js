@@ -45,19 +45,21 @@ export default function Application(props) {
   function bookInterview(id, interview) {
     const dbAppointmentUpdateURL = `/api/appointments/${id}`;
     return (
-      axios.put(dbAppointmentUpdateURL, { interview }).then((response) => {
-        if (response.status === 204) {
-          const appointment = {
-            ...state.appointments[id],
-            interview: { ...interview }
-          };
-          const appointments = {
-            ...state.appointments,
-            [id]: appointment
-          };
-          setState(prev => ({ ...prev, appointments }));
-        }
-      })
+      axios
+        .put(dbAppointmentUpdateURL, { interview })
+        .then((response) => {
+          if (response.status === 204) {
+            const appointment = {
+              ...state.appointments[id],
+              interview: { ...interview }
+            };
+            const appointments = {
+              ...state.appointments,
+              [id]: appointment
+            };
+            setState(prev => ({ ...prev, appointments }));
+          }
+        })
     );
 
   }
@@ -65,19 +67,21 @@ export default function Application(props) {
   function cancelInterview(id) {
     const dbAppointmentDeleteURL = `/api/appointments/${id}`;
     return (
-      axios.delete(dbAppointmentDeleteURL).then((response) => {
-        if (response.status === 204) {
-          const appointment = {
-            ...state.appointments[id],
-            interview: null
+      axios
+        .delete(dbAppointmentDeleteURL)
+        .then((response) => {
+          if (response.status === 204) {
+            const appointment = {
+              ...state.appointments[id],
+              interview: null
+            }
+            const appointments = {
+              ...state.appointments,
+              [id]: appointment
+            }
+            setState(prev => ({ ...prev, appointments }));
           }
-          const appointments = {
-            ...state.appointments,
-            [id]: appointment
-          }
-          setState(prev => ({...prev, appointments}));
-        }
-      })
+        })
     );
 
   }
