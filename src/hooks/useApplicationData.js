@@ -37,6 +37,31 @@ export default function useApplicationData() {
     });
   
   }, []);
+
+  function updateSpots(id, appointments) {
+    const spotsPerDay = 5;
+    const daysPerWeek = 5;
+    
+    const modifiedDayIndex = Math.floor(id/daysPerWeek);
+    const modifiedDay = state.days[modifiedDayIndex];
+    
+    // calculate spots from num of null interview appointments
+    let spots = 0; 
+    for (let i = 1; i <= modifiedDay.appointments.length; i++) {
+      const appointment = appointments[(modifiedDayIndex * spotsPerDay) + i];
+      if (!appointment.interview) {
+        spots++;
+      }
+    }
+
+    // A Days array to save back into state
+    const updatedDays = Object.assign(
+      [], 
+      { ...state.days, [modifiedDayIndex]: { ...state.days[modifiedDayIndex], spots: spots } }
+    )
+
+    return updatedDays;
+  }
   
   function bookInterview(id, interview) {
     const dbAppointmentUpdateURL = `/api/appointments/${id}`;
@@ -53,7 +78,15 @@ export default function useApplicationData() {
               ...state.appointments,
               [id]: appointment
             };
-            setState(prev => ({ ...prev, appointments }));
+            const updatedDays = updateSpots(id, appointments);
+            
+            setState(prev => ({ 
+              ...prev, 
+              appointments, 
+              days: updatedDays  
+            }));
+          } else {
+            return Promise.reject(); // when unexpected response status received from api trigger appointment error visual mode
           }
         })
     );
@@ -74,7 +107,15 @@ export default function useApplicationData() {
               ...state.appointments,
               [id]: appointment
             }
-            setState(prev => ({ ...prev, appointments }));
+            const updatedDays = updateSpots(id, appointments);
+
+            setState(prev => ({ 
+              ...prev, 
+              appointments, 
+              days: updatedDays 
+            }));
+          } else {
+            return Promise.reject();
           }
         })
     );
