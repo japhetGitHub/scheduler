@@ -10,7 +10,13 @@ export default function Application(props) {
   const [state, setState] = useState({
     day: "Monday",
     days: [],
-    appointments: {},
+    appointments: {
+      "1": {
+        id: 1,
+        time: "12pm",
+        interview: null
+      }
+    },
     interviewers: {}
   });
   const setDay = day => setState({ ...state, day });// state object helper setter function
@@ -36,6 +42,26 @@ export default function Application(props) {
 
   }, []);
 
+  function bookInterview(id, interview) {
+    const dbAppointmentUpdateURL = `/api/appointments/${id}`;
+    return (
+      axios.put(dbAppointmentUpdateURL, { interview }).then((response) => {
+        if (response.status === 204) {
+          const appointment = {
+            ...state.appointments[id],
+            interview: { ...interview }
+          };
+          const appointments = {
+            ...state.appointments,
+            [id]: appointment
+          };
+          setState(prev => ({ ...prev, appointments }));
+        }
+      })
+    );
+
+  }
+
   const dailyAppointments = getAppointmentsForDay(state, state.day);
   const dailyInterviewers = getInterviewersForDay(state, state.day);
 
@@ -48,11 +74,12 @@ export default function Application(props) {
         time={appointment.time}
         interview={interview}
         interviewers={dailyInterviewers}
+        bookInterview={bookInterview}
       />
     );
   });
 
-  
+
   return (
     <main className="layout">
       <section className="sidebar">
