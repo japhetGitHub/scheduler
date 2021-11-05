@@ -5,9 +5,9 @@ The client communicates with an API server over HTTP using JSON.
 Jest and Cypress tests were used through the development of the project.
 
 ## Screenshots
-!["screenshot of schedule show view"].()
-!["screenshot of schedule edit view"].()
-!["screenshot of schedule delete confirm view"].()
+!["screenshot of schedule show view"](https://github.com/japhetGitHub/scheduler/blob/master/docs/show_view.png?raw=true)
+!["screenshot of schedule edit view"](https://github.com/japhetGitHub/scheduler/blob/master/docs/edit_view.png?raw=true)
+!["screenshot of schedule delete confirm view"](https://github.com/japhetGitHub/scheduler/blob/master/docs/delete-confirm_view.png?raw=true)
 
 ## Setup
 
