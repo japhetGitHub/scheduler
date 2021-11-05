@@ -1,84 +1,65 @@
-beforeEach(() => {
-  cy.request("http://localhost:8001/api/debug/reset");
-})
 
 describe("Appointments", () => {
-  it("should book an interview", () => {
+  beforeEach(() => {
+    cy.request("GET", "/api/debug/reset");
+
     cy.visit("/");
 
-    cy.wait(500);
+    cy.contains("Monday");
+  });
 
-    cy.get(".appointment__add-button")
+  it("should book an interview", () => {
+    cy.get("[alt=Add]")
       .first()
       .click();
 
-    cy.get("input")
-      .should("have.class", "appointment__create-input")
-      .type("John Doe");
-
-    cy.get(".interviewers > ul li:first-child img")
-      .should("have.class", "interviewers__item-image")
+    cy.get("[data-testid=student-name-input]")
+      .type("Lydia Miller-Jones");
+    cy.get("[alt='Sylvia Palmer']")
       .click();
 
-    cy.get("button")
-      .contains("Save")
+    cy.contains("Save")
       .click();
 
-    cy.wait(1000);
-
-    cy.get(".appointment main h2")
-      .contains("John Doe");
+    cy.contains(".appointment__card--show", "Lydia Miller-Jones");
+    cy.contains(".appointment__card--show", "Sylvia Palmer");
   });
 
   it("should edit an interview", () => {
-    cy.visit("/");
-
-    cy.wait(500);
-
-    cy.get(".appointment__actions-button")
-      .first()
+    cy.get("[alt=Edit]")
       .should("be.hidden")
       .invoke("show")
       .click();
 
-    cy.get("input")
-      .should("have.class", "appointment__create-input")
+    cy.get("[data-testid=student-name-input]")
       .clear()
-      .type("Jane Doe");
-
-    cy.get(".interviewers > ul li:nth-child(2) img")
-      .should("have.class", "interviewers__item-image")
+      .type("Lydia Miller-Jones");
+    cy.get("[alt='Tori Malcolm']")
       .click();
 
-    cy.get("button")
-      .contains("Save")
+    cy.contains("Save")
       .click();
 
-    cy.wait(1000);
-
-    cy.get(".appointment main h2")
-      .contains("Jane Doe");
+    cy.contains(".appointment__card--show", "Lydia Miller-Jones");
+    cy.contains(".appointment__card--show", "Tori Malcolm");
   });
 
   it("should cancel an interview", () => {
-    cy.visit("/");
-
-    cy.wait(500);
-
-    cy.get(".appointment__actions-button")
-      .next()
+    cy.get("[alt=Delete]")
       .should("be.hidden")
       .invoke("show")
       .click();
 
-    cy.get("button")
-      .contains("Confirm")
+    cy.contains("Confirm")
       .click();
 
-    cy.wait(1000);
+    cy.contains("Deleting")
+      .should("exist");
 
-    cy.get(".appointment main")
-      .first()
-      .should("have.class", "appointment__add");
+    cy.contains("Deleting")
+      .should("not.exist");
+
+    cy.contains(".appointment__card--show", "Archie Cohen")
+      .should("not.exist");
   });
 });
